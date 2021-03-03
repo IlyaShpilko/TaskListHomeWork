@@ -10,6 +10,11 @@ import CoreData
 
 class HomeTableViewController: UITableViewController, UITextFieldDelegate {
     
+    struct Task {
+        var text: String
+        var id: Int
+    }
+    
     var alertController: UIAlertController? = nil
     var alertAction: UIAlertAction? = nil
     
@@ -23,7 +28,6 @@ class HomeTableViewController: UITableViewController, UITextFieldDelegate {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(buttonTapped))
         
         tableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: "HomeTableViewCell")
-        
         fetchText()
     }
     
@@ -42,7 +46,7 @@ class HomeTableViewController: UITableViewController, UITextFieldDelegate {
             
             let addNewElement = AddText(context: self.context)
             addNewElement.writeText = textField?.text
-            
+            addNewElement.idNumber = random()
             self.saveContent()
         })
         
@@ -52,6 +56,7 @@ class HomeTableViewController: UITableViewController, UITextFieldDelegate {
         }
     }
     
+    //MARK: -TextFieldDelegate
     func textFieldDidChangeSelection(_ textField: UITextField) {
         guard let checkText = textField.text?.count else { return }
         
@@ -72,7 +77,7 @@ class HomeTableViewController: UITableViewController, UITextFieldDelegate {
         
         let textView = self.array[indexPath.row]
         
-        cell.textLabel?.text = textView.writeText
+        cell.textLabel?.text = "(\(textView.idNumber)) \(textView.writeText ?? "")"
         
         return cell
     }
@@ -134,4 +139,8 @@ class HomeTableViewController: UITableViewController, UITextFieldDelegate {
         }
         self.fetchText()
     }
+}
+
+func random() -> Int64{
+    return Int64(Int.random(in: 0...100_000))
 }
